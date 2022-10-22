@@ -8,19 +8,19 @@ mydb = mysql.connector.connect(
     password="Pass1234"
 )
 
-def Select(sql):
-    try:
-        cursor = mydb.cursor()
-        cursor.execute(sql)
-        result = cursor.fetchall()
-        return result
-    except:
-        print("Error: unable to fetch data")
+class Database:
+    def __init__(self):
+        pass
 
-def main():
-    rid = 1
-    test = Select(f"SELECT * from restaurant where rid = {rid};")
-    print(test)
+    def Select(self, sql):
+        try:
+            cursor = mydb.cursor()
+            cursor.execute(sql)
+            result = cursor.fetchall()
+            return result
+        except:
+            print("Error: unable to fetch data")
 
-
-main()
+    def get_info(self, rid: int):
+        info = self.Select(f"SELECT * from restaurant where rid = {rid};")
+        return info
