@@ -31,10 +31,10 @@ CREATE TABLE RESTAURANT (
 --   CONSTRAINT fk_Menu foreign key (rid) references RESTAURANT (rid)
 -- );
 
-INSERT INTO RESTAURANT VALUES ('King Street Pub', 1, '333445555', 30, 'www.ksp.com', '4455228', '1100111');
-INSERT INTO RESTAURANT VALUES ('Chili\'s', 2, '987654321', 20, 'www.chilis.com', '82235', '10001');
-INSERT INTO RESTAURANT VALUES ('Olive Garden', 3, '123456789', 10, 'www.olives.com', '622554', '101011');
-INSERT INTO RESTAURANT VALUES ('Dion\'s', 4, '111111119', 10, 'www.dions.com', '8084442222', '1110010110');
+INSERT INTO RESTAURANT VALUES ('King Street Pub', 1, '333445555', 30, 'www.ksp.com', '445|52x28', '110|01|11');
+INSERT INTO RESTAURANT VALUES ('Chili\'s', 2, '987654321', 20, 'www.chilis.com', '822|35', '100|01');
+INSERT INTO RESTAURANT VALUES ('Olive Garden', 3, '123456789', 10, 'www.olives.com', '62|25|54', '10|10|11');
+INSERT INTO RESTAURANT VALUES ('Dion\'s', 4, '111111119', 10, 'www.dions.com', '828|444|2222', '111|001|0110');
 
 -- INSERT INTO MENU VALUES ('1111', 1, 'Beef, Sandwich, The Meats');
 -- INSERT INTO MENU VALUES ('2222', 2, 'Crispy Honey Chipotle Chicken Crispers, Quesadilla');
