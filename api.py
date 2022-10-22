@@ -12,5 +12,27 @@ def restaurant_storage():
     info = db.get_info(rid)
     return jsonify({'rest_info': info})
 
+@app.route("/update_free", methods=['POST'])
+def update_free_tables():
+    rid = request.get_json(force=True).get('rid')
+    freeTables = request.get_json(force=True).get('free')
+    db.update_open_tables(rid, freeTables)
+    return {'message': 'updated free tables'}
+
+@app.route("/update_layout", methods=['POST'])
+def update_seating_layout():
+    rid = request.get_json(force=True).get('rid')
+    seating = request.get_json(force=True).get('tables')
+    freeTables = ''
+    for i in seating:
+        if i == '|':
+            freeTables += '|'
+        else:
+            freeTables += '1'
+    db.update_seating(rid, seating)
+    db.update_open_tables(rid, freeTables)
+    return {'message': 'updated seating'}
+    
+
 if __name__ == "__main__":
     app.run(host = "0.0.0.0", port = 5000, debug = True)
