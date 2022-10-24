@@ -1,11 +1,14 @@
 import mysql.connector
+import getpass
+
+sqlPass = getpass.getpass("Password")
 
 #Change password
 mydb = mysql.connector.connect(
     host="localhost",
     user="root",
     database='foodzilla',
-    password="Pass1234"
+    password=sqlPass
 )
 
 class Database:
@@ -30,6 +33,9 @@ class Database:
             mydb.rollback()
             print("Error: unable to update")
 
+    def get_restaurants(self):
+        restaurants = self.Select("SELECT * from RESTAURANT;")
+        return restaurants
 
     def get_info(self, rid: int):
         info = self.Select(f"SELECT * from restaurant WHERE rid = {rid};")

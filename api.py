@@ -6,7 +6,12 @@ import requests
 app = Flask(__name__)
 
 db = Database()
-@app.route("/view_info", methods=['GET', 'POST'])
+@app.route("/get_all_info", methods=['GET'])
+def get_all_restaurants():
+    restaurants = db.get_restaurants()
+    return jsonify({'restaurants': restaurants})
+
+@app.route("/view_info", methods=['GET'])
 def restaurant_storage():
     rid = request.get_json(force=True).get('rid')
     info = db.get_info(rid)
