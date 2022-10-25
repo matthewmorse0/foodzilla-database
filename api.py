@@ -1,9 +1,11 @@
 from db import Database
 from flask import Flask, jsonify, request, redirect
+from flask_cors import CORS
 import json
 import requests
 
 app = Flask(__name__)
+CORS(app)
 
 db = Database()
 @app.route("/get_all_info", methods=['GET'])
