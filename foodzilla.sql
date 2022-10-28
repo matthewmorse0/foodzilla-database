@@ -22,6 +22,30 @@ CREATE TABLE RESTAURANT (
   -- CONSTRAINT uk_rname UNIQUE (rname) 
 );
 
+DROP TABLE IF EXISTS RINFO;
+CREATE TABLE RINFO (
+  rid         int not null,
+  numTables   int not null,
+  numCust     int,
+  custTime    int,
+  waitlist    int,
+  eWait       int
+);
+
+DROP TABLE IF EXISTS SEATING;
+CREATE TABLE SEATING (
+	rid			int,
+  xpos    int,
+  ypos    int,
+	tbid		int,
+  seats   int,
+  avaliable  boolean,
+	stime		Time,
+	CONSTRAINT pk_Table primary key (rid, tbid)
+);
+
+
+
 -- DROP TABLE IF EXISTS MENU;
 -- CREATE TABLE MENU (
 --   menuid      char(4) not null,
@@ -32,9 +56,10 @@ CREATE TABLE RESTAURANT (
 -- );
 
 INSERT INTO RESTAURANT VALUES ('King Street Pub', 1, '333445555', 30, 'www.ksp.com', '445|52x28', '110|01|11');
-INSERT INTO RESTAURANT VALUES ('Chili\'s', 2, '987654321', 20, 'www.chilis.com', '822|35', '100|01');
 INSERT INTO RESTAURANT VALUES ('Olive Garden', 3, '123456789', 10, 'www.olives.com', '62|25|54', '10|10|11');
-INSERT INTO RESTAURANT VALUES ('Dion\'s', 4, '111111119', 10, 'www.dions.com', '828|444|2222', '111|001|0110');
+INSERT INTO SEATING VALUES (1, 0, 0, 1, 4, FALSE, '1:30:00');
+INSERT INTO SEATING VALUES (1, 1, 0, 2, 6, FALSE, '1:30:00');
+INSERT INTO RINFO VALUES (1, 2, 1, 1800, 0, 1800);
 
 -- INSERT INTO MENU VALUES ('1111', 1, 'Beef, Sandwich, The Meats');
 -- INSERT INTO MENU VALUES ('2222', 2, 'Crispy Honey Chipotle Chicken Crispers, Quesadilla');
