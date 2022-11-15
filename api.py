@@ -15,6 +15,8 @@ def get_all_restaurants():
 
 @app.route("/view_info", methods=['GET'])
 def restaurant_storage():
+    # rid = json.loads(request.get_json)
+    print('request=', request.data)
     rid = request.get_json(force=True).get('rid')
     info = db.get_info(rid)
     return jsonify({'rest_info': info})
@@ -39,6 +41,13 @@ def update_seating_layout():
     db.update_seating(rid, seating)
     db.update_open_tables(rid, freeTables)
     return {'message': 'updated seating'}
+
+@app.route("/test_view_info", methods=['GET'])
+def test():
+    rid = request.args.get('rid')
+    print('rid=', rid)
+    info = db.get_info(rid)
+    return jsonify({'rest_info': info})
     
 
 if __name__ == "__main__":
