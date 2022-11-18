@@ -15,9 +15,9 @@ CREATE TABLE RESTAURANT (
   menuLink char(50) not null,
   -- diningTables is a string where each character is a digit from 0-9, 0 representing 10
   -- Each digit represents a table and how many people can be seated there, iterating through rows top to bottom, left to right
-  diningTables char(20),
+  diningTables char(32),
   -- freeTables is a string of 0s (taken) and 1s (free) indicating whether the corresponding table in diningTables is taken or free
-  freeTables char(20),
+  freeTables char(32),
   CONSTRAINT pk_Restaurant primary key (rid)
   -- CONSTRAINT uk_rname UNIQUE (rname) 
 );
@@ -31,10 +31,10 @@ CREATE TABLE RESTAURANT (
 --   CONSTRAINT fk_Menu foreign key (rid) references RESTAURANT (rid)
 -- );
 
-INSERT INTO RESTAURANT VALUES ('King Street Pub', 1, '333445555', 30, 'www.ksp.com', '445|52x28', '110|01|11');
-INSERT INTO RESTAURANT VALUES ('Chili\'s', 2, '987654321', 20, 'www.chilis.com', '822|35', '100|01');
-INSERT INTO RESTAURANT VALUES ('Olive Garden', 3, '123456789', 10, 'www.olives.com', '62|25|54', '10|10|11');
-INSERT INTO RESTAURANT VALUES ('Dion\'s', 4, '111111119', 10, 'www.dions.com', '828|444|2222', '111|001|0110');
+INSERT INTO RESTAURANT VALUES ('King Street Pub', 1, '333445555', 30, 'www.ksp.com', '00404050|05020208|30400500', '00101000|00010000|10000100');
+INSERT INTO RESTAURANT VALUES ('Chili\'s', 2, '987654321', 20, 'www.chilis.com', '00009000|30303030|00000000', '000010000|101000010|00000000');
+INSERT INTO RESTAURANT VALUES ('Olive Garden', 3, '123456789', 10, 'www.olives.com', '60000302|00060002|50000004', '10000001|00010000|10000001');
+INSERT INTO RESTAURANT VALUES ('Dion\'s', 4, '111111119', 10, 'www.dions.com', '08020080|40004004|20202020', '01010000|00001000|10101010');
 
 -- INSERT INTO MENU VALUES ('1111', 1, 'Beef, Sandwich, The Meats');
 -- INSERT INTO MENU VALUES ('2222', 2, 'Crispy Honey Chipotle Chicken Crispers, Quesadilla');
