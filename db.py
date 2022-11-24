@@ -29,9 +29,10 @@ class Database:
             cursor = mydb.cursor()
             cursor.execute(sql)
             mydb.commit()
-        except:
+        except Exception as e:
             mydb.rollback()
             print("Error: unable to update")
+            print(e)
 
     def get_restaurants(self):
         restaurants = self.Select("SELECT * from RESTAURANT;")

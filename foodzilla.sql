@@ -15,9 +15,9 @@ CREATE TABLE RESTAURANT (
   menuLink char(50) not null,
   -- diningTables is a string where each character is a digit from 0-9, 0 representing 10
   -- Each digit represents a table and how many people can be seated there, iterating through rows top to bottom, left to right
-  diningTables char(32),
+  diningTables char(64),
   -- freeTables is a string of 0s (taken) and 1s (free) indicating whether the corresponding table in diningTables is taken or free
-  freeTables char(32),
+  freeTables char(64),
   CONSTRAINT pk_Restaurant primary key (rid)
   -- CONSTRAINT uk_rname UNIQUE (rname) 
 );
