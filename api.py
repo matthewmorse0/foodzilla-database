@@ -43,6 +43,49 @@ def update_free_tables():
     print(f"rid={rid} free={freeTables}")
     db.update_open_tables(rid, str(freeTables))
     return {'message': 'updated free tables'}
+
+@app.route("/add_table", methods=['POST'])
+def add_table():
+    rid = request.get_json(force=True).get('rid')
+    xpos = request.get_json(force=True).get('xpos')
+    ypos = request.get_json(force=True).get('ypos')
+    seats = request.get_json(force=True).get('seats')
+    newseat = db.add_table(rid, xpos, ypos, seats)
+    return {'newseat': newseat}
+
+@app.route("/remove_table", methods=['POST'])
+def remove_table():
+    rid = request.get_json(force=True).get('rid')
+    tbid = request.get_json(force=True).get('tbid')
+    newseat = db.remove_table(rid, tbid)
+    return {'newseat': newseat}
+
+@app.route("/change_seat_num", methods=['POST'])
+def change_seat_num():
+    rid = request.get_json(force=True).get('rid')
+    tbid = request.get_json(force=True).get('tbid')
+    seats = request.get_json(force=True).get('seats')
+    newseat = db.change_seat_num(rid, tbid, seats)
+    return {'newseat': newseat}
+
+@app.route("/get_ewait", methods=['POST'])
+def get_ewait():
+    rid = request.get_json(force=True).get('rid')
+    ewait = db.get_ewait(rid)
+    return {'wait': ewait}
+
+@app.route("/change_seating", methods=['POST'])
+def change_seating():
+    rid = request.get_json(force=True).get('rid')
+    tbid = request.get_json(force=True).get('tbid')
+    seat = db.change_seating(rid, tbid)
+    return {'seat': seat}
+
+@app.route("/update_ewait", methods=['POST'])
+def update_ewait():
+    rid = request.get_json(force=True).get('rid')
+    ewait = db.update_ewait(rid)
+    return {'ewait': ewait}
     
 
 if __name__ == "__main__":
