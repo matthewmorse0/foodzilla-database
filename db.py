@@ -24,6 +24,8 @@ class Database:
             for y, seat in enumerate(res[0][0]):
                 if seat != '0' and seat != '|':
                     self.Update(f"REPLACE INTO SEATING VALUES ({x+1}, {y} , {bool(int(freeseating[x][0][0][y]))}, '{str(datetime.timedelta(hours=curtime.hour, minutes=curtime.minute, seconds=curtime.second))}');")
+                    self.Update(f"UPDATE RESTAURANT SET waitlist = 0, waittime = 30;")
+                    self.Update(f"UPDATE RINFO SET numCust = 1, custTime = 1800;")
         for i in range(1, 5):
             self.set_wait(i, self.cal_ewait(i))
 
@@ -107,19 +109,22 @@ class Database:
         return (datetime.timedelta(hours=curtime.hour, minutes=curtime.minute, seconds=curtime.second) - t)
 
     def cal_ewait(self, rid: int):
-        tables = self.Select(f"SELECT stime from SEATING WHERE rid = {rid} AND avaliable = {False} ORDER BY stime DESC;")
+        tables = self.Select(f"SELECT stime from SEATING WHERE rid = {rid} AND avaliable = False  ORDER BY stime ASC;")
         numTables = self.Select(f"SELECT numTables from RINFO WHERE rid = {rid};")[0][0]
-        if numTables > len(tables):
+        waitlist = self.Select(f"SELECT waitlist from RESTAURANT WHERE rid = {rid};")[0][0]
+        if numTables > (waitlist + len(tables)):
             return 0
-        waitlist = self.Select(f"SELECT waitlist from RINFO WHERE rid = {rid};")[0][0]
         if waitlist >= numTables:
-            return self.Select(f"SELECT ewait from RINFO WHERE rid = {rid};")[0][0] * 2
+            return self.Select(f"SELECT waitTime from RESTAURANT WHERE rid = {rid};")[0][0] * 2
         nextTable = tables[waitlist]
         avgCust = self.Select(f"SELECT custTime, numCust from RINFO WHERE rid = {rid};")[0]
         avgCust = avgCust[0] / avgCust[1]
         curtime = datetime.datetime.now().time()
         return (avgCust - (datetime.timedelta(hours= curtime.hour, minutes= curtime.minute, seconds= curtime.second) - nextTable[0]).total_seconds()) / 60
 
-    def change_waitlist(self, rid: int, num: int):
-        self.Update(f"UPDATE RINFO SET waitlist = {num} WHERE rid = {rid};")
-        return num
+    def add_waitlist(self, rid: int):
+        self.Update(f"UPDATE RESTAURANT SET waitlist = waitlist + 1 WHERE rid = {rid};")
+
+    def remove_waitlist(self, rid: int):
+        if self.Select(f"SELECT waitlist from RESTAURANT where rid = {rid};")[0][0] != 0:
+            self.Update(f"UPDATE RESTAURANT SET waitlist = waitlist - 1 WHERE rid = {rid};")

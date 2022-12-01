@@ -66,11 +66,19 @@ def update_free_tables():
     db.set_wait(rid, db.cal_ewait(rid))
     return {'message': 'updated free tables'}
 
-@app.route("/update_ewait", methods=['POST'])
-def update_ewait():
-    rid = request.get_json(force=True).get('rid')
-    ewait = db.update_ewait(rid)
-    return {'ewait': ewait}
+@app.route("/add_waitlist", methods=['POST'])
+def add_waitlist():
+    rid = request.args.get('rid')
+    db.add_waitlist(rid)
+    db.set_wait(rid, db.cal_ewait(rid))
+    return {'ewait': "done"}
+
+@app.route("/remove_waitlist", methods=['POST'])
+def remove_waitlist():
+    rid = request.args.get('rid')
+    db.remove_waitlist(rid)
+    db.set_wait(rid, db.cal_ewait(rid))
+    return {'ewait': "done"}
     
 if __name__ == "__main__":
     app.run(host = "0.0.0.0", port = 5000, debug = True)
