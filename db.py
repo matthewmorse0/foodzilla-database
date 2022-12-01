@@ -14,7 +14,18 @@ mydb = mysql.connector.connect(
 
 class Database:
     def __init__(self):
-        pass
+        seating = []
+        freeseating = []
+        curtime = datetime.datetime.now().time()
+        for i in range(1, 5):
+            seating.append(self.Select(f"SELECT diningTables from RESTAURANT WHERE rid = {i};"))
+            freeseating.append(self.Select(f"SELECT freeTables from RESTAURANT WHERE rid = {i};"))
+        for x, res in enumerate(seating):
+            for y, seat in enumerate(res[0][0]):
+                if seat != '0' and seat != '|':
+                    self.Update(f"REPLACE INTO SEATING VALUES ({x+1}, {y} , {bool(int(freeseating[x][0][0][y]))}, '{str(datetime.timedelta(hours=curtime.hour, minutes=curtime.minute, seconds=curtime.second))}');")
+        for i in range(1, 5):
+            self.set_wait(i, self.cal_ewait(i))
 
     def Select(self, sql: str):
         try:
@@ -36,6 +47,8 @@ class Database:
             print(e)
 
     def get_restaurants(self):
+        for i in range(1, 5):
+            self.set_wait(i, self.cal_ewait(i))
         restaurants = self.Select("SELECT * from RESTAURANT;")
         return restaurants
 
@@ -55,28 +68,33 @@ class Database:
     def update_seating(self, rid: int, seating: str):
         self.Update(f"UPDATE RESTAURANT SET diningTables = '{seating}' WHERE rid = {rid};")
 
-    def add_table(self, rid: int, xpos: int, ypos: int, seats: int):
-        newid = self.Select(f"SELECT tbid from SEATING WHERE rid = {rid} ORDER BY tbid ASC;")
-        nextid = 1
-        for id in newid:
-            if id[0] != nextid:
-                break
-            nextid = nextid + 1
-        self.Update(f"INSERT INTO SEATING VALUES ({rid}, {xpos}, {ypos}, {nextid}, {seats}, True, '1:30:00');")
-        return nextid
+    def get_seating(self, rid: int):
+        return self.Select(f"SELECT diningTables from RESTAURANT WHERE rid = {rid};")[0]
+
+    def get_freeseating(self, rid: int):
+        return self.Select(f"SELECT freeTables from RESTAURANT WHERE rid = {rid};")[0][0]
+    
+    def get_tbids(self, rid: int):
+        return {tb[0]: tb[1] for tb in self.Select(f"SELECT tbid, avaliable from SEATING WHERE rid = {rid};")}
+
+    def set_wait(self, rid: int, ewait: int):
+        self.Update(f"UPDATE RESTAURANT SET waitTime = {ewait} WHERE rid = {rid};")
+
+    def add_table(self, rid: int, tbid: int, aval: bool):
+        curtime = datetime.datetime.now().time()
+        self.Update(f"INSERT INTO SEATING VALUES ({rid}, {tbid} , {aval}, '{str(datetime.timedelta(hours=curtime.hour, minutes=curtime.minute, seconds=curtime.second))}');")
+        self.Update(f"UPDATE RINFO SET numTables = numTables + 1 WHERE rid = {rid};")
 
     def remove_table(self, rid: int, tbid: int):
         self.Update(f"DELETE FROM SEATING WHERE rid = {rid} AND tbid = {tbid};")
-
-    def change_seat_num(self, rid: int, tbid: int, seatnum: int):
-        self.Update(f"UPDATE SEATING SET seats = {seatnum} WHERE rid = {rid} AND tbid = {tbid};")
+        self.Update(f"UPDATE RINFO SET numTables = numTables - 1 WHERE rid = {rid};")
 
     def change_seating(self, rid: int, tblid: int):
         aval = self.Select(f"SELECT avaliable from SEATING WHERE rid = {rid} AND tbid = {tblid};")[0][0]
         self.Update(f"UPDATE SEATING SET avaliable = {not aval} WHERE rid = {rid} AND tbid = {tblid};")
         curtime = datetime.datetime.now().time()
         if aval:
-            #seat is avaiable
+            #seat is now seated
             self.Update(f"UPDATE SEATING SET stime = '{str(datetime.timedelta(hours=curtime.hour, minutes=curtime.minute, seconds=curtime.second))}' WHERE rid = {rid} AND tbid = {tblid};")
         else:
             self.Update(f"UPDATE RINFO SET custTime = custTime + {self.get_seated_time(rid, tblid).total_seconds()} WHERE rid = {rid};")
@@ -100,13 +118,7 @@ class Database:
         avgCust = self.Select(f"SELECT custTime, numCust from RINFO WHERE rid = {rid};")[0]
         avgCust = avgCust[0] / avgCust[1]
         curtime = datetime.datetime.now().time()
-        return avgCust - (datetime.timedelta(hours= curtime.hour, minutes= curtime.minute, seconds= curtime.second) - nextTable[0]).total_seconds()
-
-    def update_ewait(self, rid: int):
-        self.Update(f"UPDATE RINFO SET ewait = {self.cal_ewait(rid)} WHERE rid = {rid};")
-
-    def get_ewait(self, rid: int):
-        return self.Select(f"SELECT ewait from RINFO WHERE rid = {rid};")[0]
+        return (avgCust - (datetime.timedelta(hours= curtime.hour, minutes= curtime.minute, seconds= curtime.second) - nextTable[0]).total_seconds()) / 60
 
     def change_waitlist(self, rid: int, num: int):
         self.Update(f"UPDATE RINFO SET waitlist = {num} WHERE rid = {rid};")
