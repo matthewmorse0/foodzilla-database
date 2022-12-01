@@ -33,16 +33,8 @@ def update_seating_layout():
                 freeTables += oldfree[x]
         else:
             freeTables += oldfree[x]
-    newFreeTables = ''
-    for i in seating:
-        if i == '|':
-            newFreeTables += '|'
-        elif i == '0':
-            newFreeTables += '0'
-        else:
-            newFreeTables += '1'
     db.update_seating(rid, seating)
-    db.update_open_tables(rid, newFreeTables)
+    db.update_open_tables(rid, freeTables)
     db.set_wait(rid, db.cal_ewait(rid))
     return {'message': 'updated seating'}
 
